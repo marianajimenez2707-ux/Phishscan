@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../imagenes/logo.jpeg" type="image/jpeg">
+    <title>Phishscan</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../CSS/scaner.css">
+</head>
+
+<body>
+
+    <header>
+        <div>
+            <h1>Phishscan</h1>
+        </div>
+        <div>
+            <img id="logo_header" src="../imagenes/logo.jpeg">
+        </div>
+        <div>
+            <a href="../index.html">Pagina Principal</a>
+            <a href="./scaner.html">Scaner</a>
+            <a href="./simulacros.html">Simulacros</a>
+        </div>
+
+    </header>
+
+    <!-- -->
+
+    <div class="recuadro">
+        <main class="screen">
+
+            <h1 class="title">¿Será <span>phishing?</span></h1>
+
+            <div class="stats-row">
+                <div class="stat">
+                    <span class="statv">100%</span>
+                    <span class="statl">efectivo</span>
+                </div>
+                <div class="stat">
+                    <span class="statv" id="usos-contador">0</span>
+                    <span class="statl">Análisis realizados</span>
+                </div>
+            </div>
+
+            <section class="input-card">
+                <div class="IngresaTitulo">Correo sospechoso</div>
+                <textarea id="correoTx" class="correoTx" placeholder="Pega aquí el contenido del correo…"></textarea>
+                <!--El text tarea es para poder poner basatnte texto-->
+            </section>
+
+            <button id="btn-analizar" class="cssbuttons-io-button">
+                Analizar
+                <div class="icon">
+                    <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
+                            fill="currentColor"></path>
+                    </svg>
+                </div>
+            </button>
+
+            <div id="resultado-placeholder" class="resultado-placeholder">
+                <span>Aquí verás el veredicto y las razones una vez que analices un correo.</span>
+            </div>
+
+            <section id="resultado-card" class="resultado-card hidden">
+                <div class="resultado-top">
+                    <div class="veredicto-pill" id="veredicto-pill">
+                        <span id="veredicto-texto">—</span>
+                    </div>
+                    <div class="puntos-gauge" id="puntos-gauge" aria-label="puntaje">
+                        <span id="puntos-numero">0</span>
+                        <span class="puntos-label">pts</span>
+                    </div>
+                </div>
+
+                <div class="razones-box">
+                    <h2 class="razones-title">Razones</h2>
+                    <ul id="razones-lista" class="razones-lista"></ul>
+                </div>
+            </section>
+
+            <p id="error-msg" class="error-msg hidden"></p>
+
+        </main>
+
+
+    </div>
+
+    <footer class="pie">
+        <p>Es muy importante tener conciencia sobre el phishing y evitar caer en este por medio de la información</p>
+        <p id="copywright">©Phishscan</p>
+    </footer>
+
+    <script src="../JS/detector.js"></script>
+    <script src="../JS/scaner.js"></script>
+</body>
+
+</html>

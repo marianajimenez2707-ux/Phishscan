@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="imagenes/logo.jpeg" type="image/jpeg">
+    <title>Phishscan</title>
+
+    <link rel="stylesheet" href="CSS/index.css">
+</head>
+
+<body>
+    <header>
+        <div>
+            <h1>Phishscan</h1>
+        </div>
+        <div>
+            <img id="logo_header" src="imagenes/logo.jpeg">
+        </div>
+        <div>
+            <a href="index.html">Pagina Principal</a>
+            <a href="HTML/scaner.html">Scaner</a>
+            <a href="HTML/simulacros.html">Simulacros</a>
+        </div>
+
+    </header>
+
+    <div class="conteEstadisticas">
+        <div class="estadistica">
+            <span class="numEstadistica">91%</span>
+            <span class="textEstadistica">de los ciberataques empiezan con un correo</span>
+        </div>
+
+        <div class="estadistica">
+            <span class="numEstadistica">3.4B</span>
+            <span class="textEstadistica">correos de phishing enviados por día</span>
+        </div>
+
+        <div class="estadistica">
+            <span class="numEstadistica">
+                <1seg </span>
+                    <span class="textEstadistica">tarda un clic impulsivo</span>
+        </div>
+    </div>
+
+    <div class="seccion" id="quees">
+        <h2>¿Qué es el phishing?</h2>
+        <p>
+            El phishing es un tipo de ciberataque que utiliza correos electrónicos, mensajes de texto, llamadas
+            telefónicas o sitios fraudulentos para engañar a la gente y hacer que comparta datos confidenciales,
+            descargue malware o se exponga a la ciberdelincuencia web. En la actualidad es uno de los métodos más
+            utilizados por los ciberdelincuentes para cometer crímenes digitales.
+        </p>
+
+        <div class="contenedor-cajas">
+            <div class="caja">
+                <h3>No abusa de la tecnología</h3>
+                <p>Los atacantes no necesitan vulnerar sistemas ni herramientas de ciberseguridad; en su lugar, engañan
+                    a personas con acceso autorizado a dinero o información confidencial. Al basarse en la manipulación
+                    humana, esta técnica no requiere conocimientos técnicos avanzados, solo la habilidad de manipular a
+                    las víctimas para conseguir su objetivo.</p>
+            </div>
+
+            <div class="caja">
+                <h3>Llega por varios canales</h3>
+                <p>El phishing puede llegar por varios canales: correo electrónico, el más común, donde se hacen pasar
+                    por bancos o empresas; SMS (smishing) con enlaces falsos; llamadas telefónicas (vishing); redes
+                    sociales y apps de mensajería como WhatsApp; sitios web falsos que imitan páginas reales; y códigos
+                    QR maliciosos (quishing).
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="seccion" id="anatomia">
+        <h2>Anatomía de un correo trampa</h2>
+        <p>Este es un correo de phishing real. Hacé clic en las partes marcadas para ver qué lo delata.</p>
+
+        <div class="tablero">
+            <div class="correo">
+                <p><strong>De:</strong> <span class="marca" data-numero="1"
+                        onclick="mostrarPista(this)">seguridad@banc0-linea-verificar.com
+                        <span class="tip">Dominio Falso podemos ver que el dominio del correo es muy básico, al igual
+                            que la palabra banco esta mal escrita y tiene un 0 en vez de una "o", lo cual nos puede
+                            indicar que es phishing</span>
+                    </span></p>
+
+                <p><strong>Para:</strong> vos@tucorreo.com</p>
+
+                <p><strong>Asunto:</strong> <span class="marca" data-numero="2" onclick="mostrarPista(this)">¡ALERTA! Su
+                        cuenta ha sido suspendida temporalmente
+                        <span class="tip">Urgencia artificial. Te empuja a actuar rápido para que no verifiques nada
+                            antes de hacer clic.</span>
+                    </span></p>
+
+                <hr>
+
+                <p><span class="marca" data-numero="3" onclick="mostrarPista(this)">Estimado cliente
+                        <span class="tip">Saludo genérico. Una empresa que ya tiene tus datos te llamaría por tu nombre
+                            real.</span>
+                    </span>,</p>
+
+                <p>Hemos detectado una actividad de inicio de sesión sospechosa desde una dirección IP no autorizada.
+                    Por su seguridad, hemos bloqueado temporalmente el acceso a sus cuentas y tarjetas.
+
+                <p>
+                <p> Para restablecer su acceso de inmediato y evitar la baja definitiva de sus servicios, debe verificar
+                    su identidad ingresando al siguiente botón en las próximas 24 horas:</p>
+                <span class="marca" data-numero="4" onclick="mostrarPista(this)">
+                    <a href="#" class="boton-correo" onclick="return false;">Verificar mi cuenta</a>
+                    <span class="tip">Enlace disfrazado. El botón parece oficial, pero la URL real apunta a otro
+                        sitio.</span>
+                </span></p>
+            </div>
+        </div>
+
+        <p class="ayuda-tablero">Tocá las partes marcadas en rojo para ver la pista &darr;</p>
+    </div>
+    <div class="seccion" id="tipos">
+        <h2>Tipos de phishing</h2>
+
+        <div class="contenedor-tipos">
+            <div class="tarjeta-tipo">
+                <h3>Phishing masivo</h3>
+                <p>Millones de correos genéricos enviados a ciegas, esperando que alguno caiga.</p>
+            </div>
+
+            <div class="tarjeta-tipo">
+                <h3>Spear phishing</h3>
+                <p>Investigan a la víctima primero. El mensaje usa tu nombre y tu contexto real.</p>
+            </div>
+
+            <div class="tarjeta-tipo">
+                <h3>Whaling</h3>
+                <p>Apunta a directivos o personal con acceso a fondos y decisiones importantes.</p>
+            </div>
+
+            <div class="tarjeta-tipo">
+                <h3>Smishing</h3>
+                <p>Mensajes de texto con enlaces falsos de envíos, bancos o premios inexistentes.</p>
+            </div>
+
+            <div class="tarjeta-tipo">
+                <h3>Vishing</h3>
+                <p>Llamadas telefónicas suplantando a un banco, soporte técnico o autoridad.</p>
+            </div>
+
+            <div class="tarjeta-tipo">
+                <h3>Clone phishing</h3>
+                <p>Copian un correo legítimo que ya recibiste y cambian el enlace por uno malicioso.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="seccion" id="señales">
+        <h2>Señales de alerta</h2>
+        <p>Estas son señales que un correo puede llegar a ser phishing, si ves una de estas señales tienes que estar atento</p>
+
+        <ul class="lista-senales">
+            <li>Urgencia o amenaza ("suspenderemos tu cuenta")</li>
+            <li>Remitente sospechoso, es decir parece legítimo pero con minimos cambios (letras o números cambiados)</li>
+            <li>El enlace no coincide con el texto del botón, o tiene caracteres extras o diferentes</li>
+            <li>Pide contraseñas o códigos por correo</li>
+            <li>Saludo genérico en vez de tu nombre real</li>
+            <li>Adjuntos que no pediste ni esperabas</li>
+        </ul>
+    </div>
+
+    <div class="seccion" id="respuesta">
+        <h2>Si ya hiciste clic</h2>
+        <p>Actuar rápido reduce el daño. Seguí estos pasos en orden.</p>
+
+        <ol class="lista-pasos">
+            <li>No sigas ingresando datos en el formulario.</li>
+            <li>Cambiá la contraseña afectada desde el sitio oficial, escribiendo la dirección vos mismo.</li>
+            <li>Avisá a tu banco o al equipo de IT de tu trabajo.</li>
+            <li>Revisá si hay actividad reciente que no reconozcas.</li>
+            <li>Reportá el correo como phishing en tu cliente de correo.</li>
+        </ol>
+    </div>
+    <div class="seccion" id="afiches">
+        <h3 id="tituloBtn">Descarga afiches informativos sobre phishing</h3>
+        <a href="./Afiches/Afiches.pdf" download="afiche-phishing.pdf" class="button">
+
+            <span class="button__text">Descargar</span>
+
+            <span class="button__icon">
+                <svg class="svg" viewBox="0 0 35 35" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M17.5,22.131a1.249,1.249,0,0,1-1.25-1.25V2.187a1.25,1.25,0,0,1,2.5,0V20.881A1.25,1.25,0,0,1,17.5,22.131Z" />
+                    <path
+                        d="M17.5,22.693a3.189,3.189,0,0,1-2.262-.936L8.487,15.006a1.249,1.249,0,0,1,1.767-1.767l6.751,6.751a.7.7,0,0,0,.99,0l6.751-6.751a1.25,1.25,0,0,1,1.768,1.767l-6.752,6.751A3.191,3.191,0,0,1,17.5,22.693Z" />
+                    <path
+                        d="M31.436,34.063H3.564A3.318,3.318,0,0,1,.25,30.749V22.011a1.25,1.25,0,0,1,2.5,0v8.738a.815.815,0,0,0,.814.814H31.436a.815.815,0,0,0,.814-.814V22.011a1.25,1.25,0,1,1,2.5,0v8.738A3.318,3.318,0,0,1,31.436,34.063Z" />
+                </svg>
+            </span>
+        </a>
+    </div>
+
+    <footer class="pie">
+        <p>Es muy importante tener conciencia sobre el phishing y evitar caer en este por medio de la información
+        </p>
+        <p id="copywright">©Phishscan</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>
