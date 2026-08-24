@@ -32,7 +32,6 @@ function analizar() {
         return;
     }
 
-    // Todo el análisis corre localmente en el navegador (detector.js)
     const resultado = analizarCorreo(correo);
     mostrarResultado(resultado);
 
