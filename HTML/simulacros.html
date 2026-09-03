@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="../imagenes/logo.jpeg" type="image/jpeg">
+        <title>Phishscan</title>
+
+        <link
+            href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="../CSS/simulacros.css">
+    </head>
+
+<body>
+    <header>
+        <div>
+            <h1>Phishscan</h1>
+        </div>
+        <div>
+            <img id="logo_header" src="../imagenes/logo.jpeg">
+        </div>
+        <div>
+            <a href="../index.html">Pagina Principal</a>
+            <a href="./scaner.html">Scaner</a>
+            <a href="./simulacros.html">Simulacros</a>
+        </div>
+
+    </header>
+
+    <div class="contenedor">
+        <h1 id="title">Panel de Envío - Simulación de Phishing</h1>
+
+        <label for="destinatarios">Correos destinatarios (uno por línea)</label>
+        <textarea id="destinatarios" placeholder="funcionario1@empresa.com
+funcionario2@empresa.com"></textarea>
+
+        <button onclick="enviarTodos()">Enviar simulación</button>
+
+        <div id="log"></div>
+    </div>
+
+    <footer class="pie">
+        <p>Es muy importante tener conciencia sobre el phishing y evitar caer en este por medio de la información</p>
+        <p id="copywright">©Phishscan</p>
+    </footer>
+
+
+    <script src="../JS/simulacros.js"></script>
+
+</body>
+
+</html>
