@@ -77,7 +77,11 @@ body {
     line-height: 1.1;
     margin: 4px 0 0;
 }
-   
+
+#title span {
+    color: #E784AC;
+}
+
 
 main {
   flex: 1;
@@ -85,7 +89,7 @@ main {
 }
 
 .contenedor {
-  max-width: 600px;
+  max-width: 750px;
   margin: 0 auto;
   background-color: #ffffff;
   border-radius: 25px;
@@ -116,9 +120,10 @@ textarea {
   font-family: monospace;
   font-size: 14px;
   border: 3px dashed #6c9bd9;
-  border-radius: 4px;
+  border-radius: 20px;
   background-color: #fffcfc8f;
 }
+
 
 /* From Uiverse.io by mrhyddenn */ 
 button {
