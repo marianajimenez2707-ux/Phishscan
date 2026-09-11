@@ -421,7 +421,6 @@ li {
 
 /* Tablet */
 @media screen and (max-width: 768px) {
-
     .contenedor-cajas,
     .contenedor-tipos {
         flex-direction: column;
@@ -433,19 +432,15 @@ li {
     .seccion h2 {
         font-size: 22px;
     }
-
     .correo {
         padding: 20px;
     }
-
     .conteEstadisticas {
         gap: 24px;
     }
-
     .estadistica {
         max-width: 130px;
     }
-
     .numEstadistica {
         font-size: 26px;
     }

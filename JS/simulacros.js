@@ -1,4 +1,3 @@
-// Credenciales de EmailJS (fijas para este prototipo)
 const SERVICE_ID = "service_tojp0ch";
 const TEMPLATE_ID = "template_bxpv3mp";
 const PUBLIC_KEY = "hNXGVLMOXN_cfb3He";

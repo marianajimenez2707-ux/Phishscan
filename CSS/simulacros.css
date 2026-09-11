@@ -191,8 +191,6 @@ textarea {
   background-color: #fffcfc8f;
 }
 
-
-/* From Uiverse.io by mrhyddenn */ 
 button {
   position: relative;
   margin-top: 8px;
@@ -308,8 +306,7 @@ button:active {
 @media screen and (max-width: 480px) {
   #title {
     font-size: 28px;
-  }
-
+  } 
   .contenedor {
     padding: 16px;
   }

@@ -455,7 +455,6 @@ body {
         border-radius: 0;
         min-height: 100vh;
     }
-
     body {
         padding: 0;
     }
@@ -465,15 +464,12 @@ body {
     .title {
         font-size: 30px;
     }
-
     .razones-title {
         font-size: 20px;
     }
-
     .stats-row {
         gap: 8px;
     }
-
     .cssbuttons-io-button {
         width: 100%;
         justify-content: center;
@@ -486,7 +482,6 @@ body {
         min-height: auto;
         border-radius: 24px;
     }
-
     .screen {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -495,37 +490,30 @@ body {
         row-gap: 18px;
         padding: 34px 38px 12px;
     }
-
     .title {
         grid-area: title;
         font-size: 56px;
     }
-
     .stats-row {
         grid-area: stats;
         max-width: 420px;
     }
-
     .input-card {
         grid-area: input;
         min-height: 260px;
     }
-
     .resultado-card {
         grid-area: result;
     }
-
     .btn-analizar {
         grid-area: button;
         max-width: 260px;
         justify-self: start;
     }
-
     .error-msg {
         grid-area: error;
         text-align: left;
     }
-
     .resultado-placeholder {
         grid-area: result;
         display: flex;
@@ -539,7 +527,6 @@ body {
         font-size: 13px;
         min-height: 260px;
     }
-
     .resultado-placeholder.hidden {
         display: none;
     }
