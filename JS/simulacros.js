@@ -1,6 +1,6 @@
-const SERVICE_ID = "service_tojp0ch";
-const TEMPLATE_ID = "template_bxpv3mp";
-const PUBLIC_KEY = "hNXGVLMOXN_cfb3He";
+const SERVICE_ID = "service_oj1a0g9";
+const TEMPLATE_ID = "template_y7h5vx8";
+const PUBLIC_KEY = "aVAnKXumdJj5kDtyu";
 
 function log(mensaje, tipo) {
   const div = document.getElementById("log");
