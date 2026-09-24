@@ -28,21 +28,26 @@ const FRASES_URGENCIA = [
   /acceso\s+restringido/i, /responda\s+de\s+inmediato/i,
   /\b\d{1,3}\s*(horas|hrs|minutos|min)\b/i,
   /tiempo\s+l[ií]mite/i, /plazo\s+de/i, /solo\s+hoy/i, /oferta\s+por\s+tiempo\s+limitado/i,
-  /es\s+obligatorio/i, /antes\s+del?\s+(lunes|martes|mi[ée]rcoles|jueves|viernes|s[áa]bado|domingo)/i
+  /es\s+obligatorio/i, /\bobligatori[oa]\b/i,
+  /\b\d{1,3}\s*d[ií]as?(\s+h[aá]biles)?\b/i, /[uú]nicamente\s+durante/i,
+  /cierre\s+de\s+la\s+jornada/i, /acci[oó]n\s+requerida/i,
+  /(quedar[aá]|ser[aá])\s+(bloquead|suspendid|cancelad|desactivad)[oa]/i,
+  /suspensi[oó]n\s+(temporal\s+)?de\s+su\s+cuenta/i, /antes\s+del?\s+(lunes|martes|mi[ée]rcoles|jueves|viernes|s[áa]bado|domingo)/i
 ];
 
 const FRASES_DATOS_SENSIBLES = [
   /contrase[nñ]a/i, /n[uú]mero\s+de\s+tarjeta/i, /\bcvv\b/i,
   /clave\s+(secreta|de\s+acceso)/i, /datos\s+bancarios/i,
   /\bpin\b/i, /confirmar\s+su\s+identidad/i, /verificar\s+su\s+identidad/i,
-  /actualizar\s+su\s+informaci[oó]n/i, /datos\s+de\s+pago/i, /informaci[oó]n\s+de\s+pago/i
+  /actualizar\s+su\s+informaci[oó]n/i, /datos\s+de\s+pago/i,
+  /credenciales/i, /validaci[oó]n\s+de\s+su\s+identidad/i, /validar\s+(mi|su)\s+cuenta/i, /informaci[oó]n\s+de\s+pago/i
 ];
 
+// (o|a|\(a\)|\/a) acepta "Estimado", "Estimada", "Estimado(a)" y "Estimado/a"
 const SALUDOS_GENERICOS = [
-  /estimad[oa]\s+client[e]?/i, /estimad[oa]\s+usuario/i,
-  /querid[oa]\s+client[e]?/i, /dear\s+customer/i, /dear\s+user/i,
-  /estimad[oa]\s+colaborador[a]?/i, /estimad[oa]\s+emplead[oa]/i,
-  /querid[oa]\s+colaborador[a]?/i, /dear\s+employee/i
+  /(estimad|querid)o?(a|\(a\)|\/a)?\s+(client|usuari|colaborador|emplead|funcionari|miembro|equipo)/i,
+  /dear\s+(customer|user|employee)/i,
+  /hola\s+(a\s+)?tod[oa]s/i, /hola\s+(a\s+todo\s+el\s+)?equipo/i, /a\s+todo\s+el\s+personal/i
 ];
 
 const ERRORES_COMUNES = [
@@ -63,6 +68,24 @@ const FRASES_PAGO_ANTICIPADO = [
   /costos?\s+de\s+env[ií]o/i, /cubrir\s+los?\s+costos/i,
   /tarifa\s+de\s+procesamiento/i, /peque[nñ]a\s+cantidad/i,
   /pago\s+(m[ií]nimo|simb[oó]lico)/i, /gastos\s+administrativos/i
+];
+
+// Te empuja a entrar por un enlace o botón (aunque el enlace no se vea como URL)
+const FRASES_LLAMADO_ENLACE = [
+  /siguiente\s+(enlace|bot[oó]n|link)/i, /\[enlace/i, /haga\s+cl[ií]c/i, /haz\s+cl[ií]c/i,
+  /ingres(e|a|ar)\s+(a|en)\s+(nuestro|el)\s+portal/i, /(ingrese|acceda)\s+aqu[ií]/i
+];
+
+// Adjuntos o descargas que no pediste
+const FRASES_ADJUNTO = [
+  /archivo\s+adjunto/i, /descargue/i, /descarga\s+el/i, /abr(a|e)\s+el\s+(adjunto|archivo|documento)/i,
+  /firma\s+de\s+recibido/i
+];
+
+// Cebos típicos de RRHH / beneficios (muy usados en phishing corporativo)
+const FRASES_CEBO_BENEFICIOS = [
+  /beneficios/i, /incentivos/i, /aumento\s+salarial/i, /bono\s+(anual|extra|especial)/i,
+  /ajuste\s+salarial/i, /n[oó]mina/i, /aguinaldo/i
 ];
 
 function extraerDominio(remitente) {
@@ -151,7 +174,7 @@ function analizarCorreo(texto, remitente = "") {
   //    armado para sonar a sorteo/premio/regalo
   let dominio = remitente ? extraerDominio(remitente) : "";
   if (!dominio) {
-    const matchFrom = textoLower.match(/(?:de|from)\s*:\s*[^\s<]+@([\w.-]+)/);
+    const matchFrom = textoLower.match(/(?:remitente|de|from)\s*:[^\n@]*?[\w.+-]+@([\w.-]+)/);
     if (matchFrom) dominio = matchFrom[1];
   }
   if (dominio && esTyposquatting(dominio)) {
@@ -240,6 +263,24 @@ function analizarCorreo(texto, remitente = "") {
   if (algunaCoincide(FRASES_PAGO_ANTICIPADO, textoLower)) {
     puntos += 1;
     razones.push("Pide un pago o cuota por adelantado para recibir algo (típico de estafas de anticipo) (+1)");
+  }
+
+  // 10. Pide entrar por un enlace/botón (solo si no se contó ya un enlace sospechoso)
+  if (!enlaceSospechoso && algunaCoincide(FRASES_LLAMADO_ENLACE, textoLower)) {
+    puntos += 1;
+    razones.push("Te pide entrar por un enlace o botón en lugar de ir tú mismo al sitio oficial (+1)");
+  }
+
+  // 11. Adjuntos o descargas
+  if (algunaCoincide(FRASES_ADJUNTO, textoLower)) {
+    puntos += 1;
+    razones.push("Te pide descargar o abrir un archivo adjunto (+1)");
+  }
+
+  // 12. Cebo de beneficios / RRHH
+  if (algunaCoincide(FRASES_CEBO_BENEFICIOS, textoLower)) {
+    puntos += 1;
+    razones.push("Usa como cebo beneficios, incentivos o temas de RRHH (+1)");
   }
 
   // Veredicto según puntaje
