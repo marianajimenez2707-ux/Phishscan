@@ -20,6 +20,16 @@ const PALABRAS_DOMINIO_SOSPECHOSO = [
 // (además de las marcas específicas de MARCAS_COMUNES)
 const PALABRAS_ENTIDAD_GENERICA = ["banco", "bank", "seguridad", "verificar", "login", "acceso"];
 
+// NUEVO: terminaciones de dominio (TLD) muy usadas en sitios de phishing
+const TLDS_SOSPECHOSOS = new Set([
+  "tk", "ml", "ga", "cf", "gq", "xyz", "top", "biz", "info", "ru",
+  "click", "work", "zip", "icu", "buzz", "loan", "monster", "cn"
+]);
+
+// NUEVO: etiquetas que se usan como "disfraz" dentro de un subdominio
+// (ej: empresa.com.bad-domain.ru parece empresa.com, pero es bad-domain.ru)
+const ETIQUETAS_GENERICAS = new Set(["com", "net", "org", "gob", "gov", "edu"]);
+
 const FRASES_URGENCIA = [
   /act[uú]a\s+ahora/i, /urgente/i, /inmediat[oa]mente/i, /de\s+inmediato/i,
   /su\s+cuenta\s+ser[aá]\s+(suspendida|bloqueada|cerrada)/i,
@@ -32,7 +42,12 @@ const FRASES_URGENCIA = [
   /\b\d{1,3}\s*d[ií]as?(\s+h[aá]biles)?\b/i, /[uú]nicamente\s+durante/i,
   /cierre\s+de\s+la\s+jornada/i, /acci[oó]n\s+requerida/i,
   /(quedar[aá]|ser[aá])\s+(bloquead|suspendid|cancelad|desactivad)[oa]/i,
-  /suspensi[oó]n\s+(temporal\s+)?de\s+su\s+cuenta/i, /antes\s+del?\s+(lunes|martes|mi[ée]rcoles|jueves|viernes|s[áa]bado|domingo)/i
+  /suspensi[oó]n\s+(temporal\s+)?de\s+su\s+cuenta/i, /antes\s+del?\s+(lunes|martes|mi[ée]rcoles|jueves|viernes|s[áa]bado|domingo)/i,
+  // NUEVO: amenazas de cancelación/eliminación y plazos "hoy" o "fin del día"
+  /se\s+(cancelar|suspender|bloquear|eliminar|cerrar|desactivar)[aá]/i,
+  /ser[aá]\s+(eliminad|devuelt|borrad|cerrad)[oa]/i,
+  /a\s+menos\s+que\s+(actualice|actualiza|verifique|confirme|pague|ingrese)/i,
+  /antes\s+de\s+(finalizar|terminar)\s+(el\s+)?d[ií]a/i
 ];
 
 const FRASES_DATOS_SENSIBLES = [
@@ -40,14 +55,20 @@ const FRASES_DATOS_SENSIBLES = [
   /clave\s+(secreta|de\s+acceso)/i, /datos\s+bancarios/i,
   /\bpin\b/i, /confirmar\s+su\s+identidad/i, /verificar\s+su\s+identidad/i,
   /actualizar\s+su\s+informaci[oó]n/i, /datos\s+de\s+pago/i,
-  /credenciales/i, /validaci[oó]n\s+de\s+su\s+identidad/i, /validar\s+(mi|su)\s+cuenta/i, /informaci[oó]n\s+de\s+pago/i
+  /credenciales/i, /validaci[oó]n\s+de\s+su\s+identidad/i, /validar\s+(mi|su)\s+cuenta/i, /informaci[oó]n\s+de\s+pago/i,
+  // NUEVO: métodos de pago, tarjetas, usuario/clave y datos personales o institucionales
+  /m[eé]todos?\s+de\s+pago/i, /tarjeta\s+de\s+(cr[eé]dito|d[eé]bito)/i,
+  /clave\s+actual/i, /usuario\s+y\s+(clave|contrase[nñ]a)/i,
+  /datos\s+(institucionales|personales)/i, /complete\s+sus\s+datos/i
 ];
 
 // (o|a|\(a\)|\/a) acepta "Estimado", "Estimada", "Estimado(a)" y "Estimado/a"
 const SALUDOS_GENERICOS = [
-  /(estimad|querid)o?(a|\(a\)|\/a)?\s+(client|usuari|colaborador|emplead|funcionari|miembro|equipo)/i,
+  /(estimad|querid)o?(a|\(a\)|\/a)?\s+(client|usuari|colaborador|emplead|funcionari|miembro|equipo|destinatari)/i,
   /dear\s+(customer|user|employee)/i,
-  /hola\s+(a\s+)?tod[oa]s/i, /hola\s+(a\s+todo\s+el\s+)?equipo/i, /a\s+todo\s+el\s+personal/i
+  /hola\s+(a\s+)?tod[oa]s/i, /hola\s+(a\s+todo\s+el\s+)?equipo/i, /a\s+todo\s+el\s+personal/i,
+  // NUEVO: "Atención usuario", "Atención cliente", etc.
+  /atenci[oó]n\s+(usuari|client|emplead|colaborador)/i
 ];
 
 const ERRORES_COMUNES = [
@@ -67,7 +88,10 @@ const FRASES_PREMIO_GANADOR = [
 const FRASES_PAGO_ANTICIPADO = [
   /costos?\s+de\s+env[ií]o/i, /cubrir\s+los?\s+costos/i,
   /tarifa\s+de\s+procesamiento/i, /peque[nñ]a\s+cantidad/i,
-  /pago\s+(m[ií]nimo|simb[oó]lico)/i, /gastos\s+administrativos/i
+  /pago\s+(m[ií]nimo|simb[oó]lico)/i, /gastos\s+administrativos/i,
+  // NUEVO: tarifas para "reprogramar" o "liberar" una entrega
+  /tarifa\s+de\s+(reintento|reenv[ií]o|reprogramaci[oó]n|entrega|aduana|liberaci[oó]n)/i,
+  /pagar\s+la\s+tarifa/i, /pago\s+de\s+(la\s+)?tarifa/i
 ];
 
 // Te empuja a entrar por un enlace o botón (aunque el enlace no se vea como URL)
@@ -86,6 +110,13 @@ const FRASES_ADJUNTO = [
 const FRASES_CEBO_BENEFICIOS = [
   /beneficios/i, /incentivos/i, /aumento\s+salarial/i, /bono\s+(anual|extra|especial)/i,
   /ajuste\s+salarial/i, /n[oó]mina/i, /aguinaldo/i
+];
+
+// NUEVO: cebo de paquetería / envíos retenidos (muy usado para cobrar "tarifas")
+const FRASES_CEBO_ENVIO = [
+  /paquete[^.\n]{0,80}(retenid|detenid|no\s+pudo\s+ser\s+entregad)/i,
+  /direcci[oó]n\s+(de\s+entrega\s+)?(est[aá]\s+)?incompleta/i,
+  /reprogramar\s+(la\s+|su\s+)?entrega/i, /n[uú]mero\s+de\s+gu[ií]a/i
 ];
 
 function extraerDominio(remitente) {
@@ -154,6 +185,57 @@ function tieneMuchosGuiones(dominio) {
   return (d.match(/-/g) || []).length >= 2;
 }
 
+// NUEVO: distancia de edición (cuántas letras hay que cambiar, borrar o agregar
+// para convertir una palabra en otra). Sirve para detectar "netflx" vs "netflix".
+function distanciaEdicion(a, b) {
+  const fila = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    let anterior = fila[0];
+    fila[0] = i;
+    for (let j = 1; j <= b.length; j++) {
+      const temp = fila[j];
+      fila[j] = Math.min(
+        fila[j] + 1,
+        fila[j - 1] + 1,
+        anterior + (a[i - 1] === b[j - 1] ? 0 : 1)
+      );
+      anterior = temp;
+    }
+  }
+  return fila[b.length];
+}
+
+// NUEVO: detecta marcas escritas con un error de una letra
+// (ej: "netflx-subscription-update.com" imita "netflix")
+function esMarcaConErrorOrtografico(dominio) {
+  const etiquetas = (dominio || "").toLowerCase().split(/[.\-]/);
+  return etiquetas.some((etiqueta) =>
+    etiqueta.length >= 6 &&
+    MARCAS_COMUNES.some((marca) => marca !== etiqueta && distanciaEdicion(etiqueta, marca) === 1)
+  );
+}
+
+// NUEVO: detecta dominios que usan "com", "net", "org"... como disfraz en medio
+// (ej: "empresa.com.bad-domain.ru" parece de empresa.com, pero es de bad-domain.ru)
+function usaSubdominioEnganoso(dominio) {
+  const partes = (dominio || "").toLowerCase().split(".");
+  for (let i = 1; i <= partes.length - 3; i++) {
+    if (ETIQUETAS_GENERICAS.has(partes[i])) return true;
+  }
+  return false;
+}
+
+// NUEVO: dominios que terminan en una extensión muy usada para phishing (.tk, .top, .ru...)
+function tieneTldSospechoso(dominio) {
+  const partes = (dominio || "").toLowerCase().split(".");
+  return partes.length > 1 && TLDS_SOSPECHOSOS.has(partes[partes.length - 1]);
+}
+
+// NUEVO: enlaces que descargan directamente un archivo ejecutable
+function esEnlaceEjecutable(url) {
+  return /\.(exe|scr|bat|cmd|msi|vbs|jar|apk)(\?.*)?$/i.test(url || "");
+}
+
 function algunaCoincide(patrones, texto) {
   return patrones.some((p) => p.test(texto));
 }
@@ -186,6 +268,15 @@ function analizarCorreo(texto, remitente = "") {
   } else if (dominio && esDominioGenericoSospechoso(dominio)) {
     puntos += 1;
     razones.push(`Remitente sospechoso: el dominio '${dominio}' usa palabras típicas de estafas (premio, sorteo, etc.) (+1)`);
+  } else if (dominio && esMarcaConErrorOrtografico(dominio)) {
+    puntos += 1;
+    razones.push(`Remitente sospechoso: el dominio '${dominio}' imita una marca conocida con una letra cambiada o faltante (+1)`);
+  } else if (dominio && usaSubdominioEnganoso(dominio)) {
+    puntos += 1;
+    razones.push(`Remitente sospechoso: el dominio '${dominio}' simula ser de otra organización, pero el dominio real es distinto (+1)`);
+  } else if (dominio && tieneTldSospechoso(dominio)) {
+    puntos += 1;
+    razones.push(`Remitente sospechoso: el dominio '${dominio}' termina en una extensión muy usada en phishing (+1)`);
   } else if (dominio && tieneMuchosGuiones(dominio)) {
     puntos += 1;
     razones.push(`Remitente sospechoso: el dominio '${dominio}' tiene varios guiones, un patrón típico de dominios falsos armados para sonar oficiales (+1)`);
@@ -203,6 +294,9 @@ function analizarCorreo(texto, remitente = "") {
   let enlaceRazon = "";
   for (const url of urls) {
     const host = obtenerHost(url);
+    if (esEnlaceEjecutable(url)) {
+      enlaceSospechoso = true; enlaceRazon = "enlace que descarga un archivo ejecutable (.exe, .scr, etc.)"; break;
+    }
     if (ACORTADORES.has(host)) {
       enlaceSospechoso = true; enlaceRazon = "acortador de enlaces"; break;
     }
@@ -217,6 +311,15 @@ function analizarCorreo(texto, remitente = "") {
     }
     if (esDominioGenericoSospechoso(host)) {
       enlaceSospechoso = true; enlaceRazon = "dominio con palabras típicas de estafas"; break;
+    }
+    if (esMarcaConErrorOrtografico(host)) {
+      enlaceSospechoso = true; enlaceRazon = "dominio que imita una marca conocida con una letra cambiada o faltante"; break;
+    }
+    if (usaSubdominioEnganoso(host)) {
+      enlaceSospechoso = true; enlaceRazon = "dominio que simula ser de otra organización"; break;
+    }
+    if (tieneTldSospechoso(host)) {
+      enlaceSospechoso = true; enlaceRazon = "dominio con una extensión muy usada en phishing (.tk, .top, .ru, etc.)"; break;
     }
     if (tieneMuchosGuiones(host)) {
       enlaceSospechoso = true; enlaceRazon = "dominio con varios guiones, poco común en sitios oficiales"; break;
@@ -281,6 +384,12 @@ function analizarCorreo(texto, remitente = "") {
   if (algunaCoincide(FRASES_CEBO_BENEFICIOS, textoLower)) {
     puntos += 1;
     razones.push("Usa como cebo beneficios, incentivos o temas de RRHH (+1)");
+  }
+
+  // 13. Cebo de paquetería / envío retenido
+  if (algunaCoincide(FRASES_CEBO_ENVIO, textoLower)) {
+    puntos += 1;
+    razones.push("Usa como cebo un paquete retenido o una entrega fallida (+1)");
   }
 
   // Veredicto según puntaje
